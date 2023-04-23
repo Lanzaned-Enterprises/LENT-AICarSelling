@@ -62,7 +62,7 @@ RegisterNetEvent('LENT-AICarSelling:Client:ScrapCar', function()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     local plate = GetVehicleNumberPlateText(vehicle)
     NetworkRequestControlOfEntity(vehicle)
-    -- QBCore.Functions.DeleteVehicle(vehicle)
+    QBCore.Functions.DeleteVehicle(vehicle)
     TriggerServerEvent('LENT-AICarSelling:Server:SellClosestCar', plate)
 end)
 
