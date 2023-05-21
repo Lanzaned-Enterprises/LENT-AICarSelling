@@ -1,5 +1,5 @@
 --[[ Version Checker ]] --
-local version = "100"
+local version = "200"
 
 local DISCORD_WEBHOOK = ""
 local DISCORD_NAME = "LENT - AICarSelling"

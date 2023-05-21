@@ -27,6 +27,7 @@ RegisterNetEvent('LENT-AICarSelling:Server:SellClosestCar', function(plate)
             plate,
         })
         TriggerClientEvent('LENT-AICarSelling:Client:Redirect', src)
+        TriggerClientEvent('LENT-AICarSelling:Client:SellVehicle', src)
     else
         TriggerClientEvent('QBCore:Notify', src, 'You don\'t own this vehicle!', 'error', 3000)
     end
@@ -42,13 +43,13 @@ RegisterNetEvent('LENT-AICarSelling:Server:Payout', function()
     local email = "Hello, Mr." .. Player.PlayerData.charinfo.lastname .. "<br><br> Thanks for your car! We appreciate it! We wired you $" .. comma_value(cashAmount) .. "<br><br> Your receipt ID: <i>" .. math.random(111111, 999999) .. "</i><br><br> Regards, San Andreas DMV"
 
     local cid = Player.PlayerData.citizenid
+    local title = "Car Sale"
     local name = ("%s %s"):format(Player.PlayerData.charinfo.firstname, Player.PlayerData.charinfo.lastname)
     local txt = "Purchased car by the DMV"
-    exports['Renewed-Banking']:handleTransaction(cid, "Car Sale", cashAmount, txt, "S.A. DMV", name, "deposit")
+    local issuer = "S.A. DMV"
+    local reciver = name
+    local type = "deposit"
+    exports['Renewed-Banking']:handleTransaction(cid, title, cashAmount, txt, issuer, reciver, type)
 
     TriggerClientEvent('LENT-AICarSelling:Client:ReceiveMail', src, email)
-end)
-
-QBCore.Commands.Add('testai', 'Testing for AI car selling', {}, false, function(source, args)
-    TriggerClientEvent('LENT-AICarSelling:Client:ScrapCar', source)
 end)

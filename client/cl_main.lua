@@ -16,13 +16,7 @@ AddEventHandler('onResourceStop', function(resource)
 end)
 
 -- [[ Functions ]] --
-local function genTransactionID()
-    local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-    return string.gsub(template, '[xy]', function (c)
-        local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
-        return string.format('%x', v)
-    end)
-end
+
 
 -- [[ Zone Check ]] --
 local zone = PolyZone:Create({
@@ -61,9 +55,16 @@ end)
 RegisterNetEvent('LENT-AICarSelling:Client:ScrapCar', function()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     local plate = GetVehicleNumberPlateText(vehicle)
+    -- NetworkRequestControlOfEntity(vehicle)
+    -- QBCore.Functions.DeleteVehicle(vehicle)
+    TriggerServerEvent('LENT-AICarSelling:Server:SellClosestCar', plate)
+end)
+
+RegisterNetEvent('LENT-AICarSelling:Client:SellVehicle', function()
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    local plate = GetVehicleNumberPlateText(vehicle)
     NetworkRequestControlOfEntity(vehicle)
     QBCore.Functions.DeleteVehicle(vehicle)
-    TriggerServerEvent('LENT-AICarSelling:Server:SellClosestCar', plate)
 end)
 
 RegisterNetEvent('LENT-AICarSelling:Client:ReceiveMail', function(email)
@@ -91,6 +92,7 @@ RegisterNetEvent('LENT-AICarSelling:Client:ReceiveMail', function(email)
 end)
 
 RegisterNetEvent('LENT-AICarSelling:Client:Redirect', function()
+    TriggerEvent('LENT-AICarSelling:Client:SellVehicle')
     TriggerServerEvent('LENT-AICarSelling:Server:Payout')
 end)
 
