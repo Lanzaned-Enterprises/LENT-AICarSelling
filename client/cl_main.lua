@@ -2,9 +2,6 @@
 QBCore = exports['qb-core']:GetCoreObject()
 
 -- [[ Variables ]] --
-local pedSpawned = false
-local PedCreated = {}
-
 local inSellingZone = false
 local isInSellZone = nil
 
@@ -30,7 +27,38 @@ local zone = PolyZone:Create({
     maxZ = 34.1,
 })
 
+local zone2 = PolyZone:Create({
+    vector2(-432.20, -1695.73),
+    vector2(-425.77, -1674.58),
+    vector2(-415.30, -1677.41),
+    vector2(-424.40, -1699.41),
+    }, {
+    name = "bcSellZone",
+    minZ = 19.01,
+    maxZ = 19.02,
+})
+
 zone:onPlayerInOut(function(isPointInside)
+    if isPointInside then
+        inSellingZone = true
+        exports['qb-core']:DrawText('F1 - To sell car!', 'left')
+        if IsPedInAnyVehicle(PlayerPedId()) then
+            exports['qb-radialmenu']:AddOption(6, {
+                id = 'lent_sellvehicle',
+                title = 'Sell Vehicle',
+                icon = 'square-parking',
+                type = 'client',
+                event = 'LENT-AICarSelling:Client:ScrapCar',
+                shouldClose = true
+            })
+        end
+    else
+        inSellingZone = false
+        exports['qb-core']:HideText()
+        exports['qb-radialmenu']:RemoveOption(6)
+    end
+end)
+zone2:onPlayerInOut(function(isPointInside)
     if isPointInside then
         inSellingZone = true
         exports['qb-core']:DrawText('F1 - To sell car!', 'left')
@@ -55,8 +83,6 @@ end)
 RegisterNetEvent('LENT-AICarSelling:Client:ScrapCar', function()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     local plate = GetVehicleNumberPlateText(vehicle)
-    -- NetworkRequestControlOfEntity(vehicle)
-    -- QBCore.Functions.DeleteVehicle(vehicle)
     TriggerServerEvent('LENT-AICarSelling:Server:SellClosestCar', plate)
 end)
 
